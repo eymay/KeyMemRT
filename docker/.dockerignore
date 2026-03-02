@@ -1,0 +1,42 @@
+# Git files
+.git/
+.gitignore
+
+# Build artifacts (will be mounted as volume)
+build/
+
+# Python caches
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.so
+*.egg
+*.egg-info/
+dist/
+.eggs/
+.venv/
+venv/
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Documentation
+*.md
+docs/
+
+# Temporary files
+*.log
+*.tmp
+.cache/
+*.bak
+
+# Test files
+tests/
+*.test
