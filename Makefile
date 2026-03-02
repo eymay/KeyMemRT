@@ -1,6 +1,10 @@
 # KeyMem-RT Makefile - File dependency tracking for expensive operations
 # Handles: Python->MLIR, HEIR optimization, C++ compilation
 
+# Try to include CMake-generated configuration (optional)
+# Run 'cmake -B build' to generate build/build.config with auto-discovered paths
+-include build/build.config
+
 # Configuration
 KEYMEMRT_COMPILER ?= $(shell echo $$KEYMEMRT_COMPILER)
 # Check if HEIR tools are already directly in KEYMEMRT_COMPILER (container setup)
@@ -33,13 +37,24 @@ SERIALIZED_BASE_DIR ?= /tmp/keymemrt
 # Compiler settings
 CXX = clang++
 CFLAGS = -std=c++17 -O2 -w -g0 -fPIC
-INCLUDES = -I../../include -I/usr/local/include/ -I/usr/local/include/openfhe \
-           -I/usr/local/include/openfhe/pke -I/usr/local/include/openfhe/core/ \
-           -I/usr/local/include/openfhe/binfhe -I/usr/local/include/cereal \
-           -I$(shell pwd)/include \
-           -I$(shell pwd)/drivers \
-           -I/usr/local
-LIBS = -L/usr/local/lib -lOPENFHEcore -lOPENFHEpke -lOPENFHEbinfhe
+
+# Use CMake-discovered paths if available, otherwise fall back to hardcoded defaults
+ifdef CMAKE_CONFIGURED
+    INCLUDES = $(CMAKE_OPENFHE_INCLUDES) $(CMAKE_CEREAL_INCLUDES) \
+               -I$(shell pwd)/include \
+               -I$(shell pwd)/drivers
+    LIBS = $(CMAKE_OPENFHE_LIBS)
+else
+    # Fallback: Hardcoded paths (works but less portable)
+    INCLUDES = -I/usr/local/include/ -I/usr/local/include/openfhe \
+               -I/usr/local/include/openfhe/pke -I/usr/local/include/openfhe/core/ \
+               -I/usr/local/include/openfhe/binfhe -I/usr/local/include/cereal \
+               -I/usr/include \
+               -I$(shell pwd)/include \
+               -I$(shell pwd)/drivers \
+               -I/usr/local
+    LIBS = -L/usr/local/lib -lOPENFHEcore -lOPENFHEpke -lOPENFHEbinfhe
+endif
 
 # Standalone networks
 STANDALONE_NETWORKS = mlp lola lenet alexnet vgg

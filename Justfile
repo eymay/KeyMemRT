@@ -28,6 +28,13 @@ setup:
     mkdir -p {{BUILD_DIR}} data {{RESULTS_DIR}} {{NETWORKS_DIR}} {{LOGS_DIR}}
     mkdir -p drivers include
     @echo "✅ Directory structure ready"
+
+# Configure build with CMake (discovers dependencies, generates build.config)
+configure:
+    @echo "🔧 Running CMake to discover dependencies..."
+    cmake -B {{BUILD_DIR}} -S .
+    @echo "✅ Generated {{BUILD_DIR}}/build.config"
+    @echo "   Makefile will now use auto-discovered include paths"
     @echo "Build directory: {{BUILD_DIR}}/"
 
 # Build tests only with CMake
